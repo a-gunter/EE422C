@@ -1,15 +1,13 @@
 package assignment4;
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
- * Slip days used: <0>
- * Fall 2016
+ * <Matthew Davis>
+ * <mqd224>
+ * <15510>
+ * <Austin Gunter>
+ * <asg2523>
+ * <15510>
+ * Spring 2018
  */
 
 
@@ -52,9 +50,19 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	
+	private boolean hasMoved;	// used to check if a creature is able to move in an encounter
+	private boolean isFighting;  // used to check if a creature can move into a spot where another creature already exists.
+	private static final int WALK = 1;
+	private static final int RUN = 2;
+	
 	protected final void walk(int direction) {
-		move(direction);
-		this.energy -= Params.walk_energy_cost;
+		if(canMove(direction, WALK)) {	// check if walking is a valid option for the critter
+			move(direction);
+			this.energy -= Params.walk_energy_cost;
+			this.hasMoved = true;
+		} else {
+			this.energy -= Params.walk_energy_cost;  // if invalid option, reduce energy anyway.
+		}
 	}
 	
 	protected final void run(int direction) {
@@ -271,8 +279,13 @@ public abstract class Critter {
 		for(Critter c: population) {
 			c.doTimeStep();
 		}
-		// do fights ie encounters
 		
+/////////////////// Should we remove dead critters here as well? Just in case a critter dies from their initial timestep.
+////////////////// That way, we won't have to deal with encounters with already-dead critters.
+		
+		// do fights ie encounters
+		doEncounters();
+
 		//rest energy stuff (maybe?)
 		for(Critter c: population) {
 			c.energy -= Params.rest_energy_cost;
@@ -287,6 +300,8 @@ public abstract class Critter {
 		for(Critter c: population) {
 			if(c.energy <= 0) population.remove(c);
 		}
+		
+		// at the end of timestep, revert all critters' hasMoved/isFighting to false
 	}
 	
 	/**
@@ -325,5 +340,114 @@ public abstract class Critter {
 			System.out.println();
 		}
 		
+	}
+	
+	/**
+	 * Checks if a critter can move or not, depending on its past actions. Critters can only move once per timestep,
+	 * and critters cannot move into a pre-occupied space while fighting.
+	 * @param direction The direction to move
+	 * @param numSteps  1 for walk, 2 for run
+	 * @return True if Critter can move, false otherwise.
+	 */
+	private boolean canMove(int direction, int numSteps) {
+		if(this.hasMoved) { // can only move once
+			return false;
+		} else if(this.isFighting) {  // if fighting, can't move where another critter exists
+			if(numSteps == WALK) {
+				if(look(direction, WALK))
+					return false;
+				else
+					return true;
+			} else if(numSteps == RUN){
+				if(look(direction, RUN))
+					return false;
+				else
+					return true;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Simulates & resolves encounters for every living critter.
+	 */
+	private static void doEncounters() {
+		for(int i = 0; i < population.size(); i++) {	// compare critters with every other critter to see if there are overlaps
+			Critter A = population.get(i);
+			for(int j = i + 1; j < population.size(); j++) {
+				Critter B = population.get(j);
+				if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
+					A.isFighting = true;
+					B.isFighting = true;
+					// todo: finish doEncounters
+				}
+			}
+		}
+	}
+	
+	/**
+	 * "Looks" in the specified direction to see if a space is occupied.
+	 * @param direction The direction the look towards
+	 * @param numSteps  1 for walk, 2 for run
+	 * @return True if the space is occupied, false otherwise.
+	 */
+	private boolean look(int direction, int numSteps) {
+		if(numSteps == WALK) {
+			switch(direction) {
+			case 0:
+				return isOccupied((this.x_coord + 1) % Params.world_width, this.y_coord);
+			case 1:
+				return isOccupied((this.x_coord + 1) % Params.world_width, (this.y_coord - 1) % Params.world_height);
+			case 2:
+				return isOccupied(this.x_coord, (this.y_coord - 1) % Params.world_height);
+			case 3:
+				return isOccupied((this.x_coord - 1) % Params.world_width, (this.y_coord - 1) % Params.world_height);
+			case 4:
+				return isOccupied((this.x_coord - 1) % Params.world_width, this.y_coord);
+			case 5:
+				return isOccupied((this.x_coord - 1) % Params.world_width, (this.y_coord + 1) % Params.world_height);
+			case 6:
+				return isOccupied(this.x_coord, (this.y_coord + 1) % Params.world_height);
+			case 7:
+				return isOccupied((this.x_coord + 1) % Params.world_width, (this.y_coord + 1) % Params.world_height);
+			default:
+			}
+		} else if(numSteps == RUN) {
+			switch(direction) {
+			case 0:
+				return isOccupied((this.x_coord + 2) % Params.world_width, this.y_coord);
+			case 1:
+				return isOccupied((this.x_coord + 2) % Params.world_width, (this.y_coord - 2) % Params.world_height);
+			case 2:
+				return isOccupied(this.x_coord, (this.y_coord - 2) % Params.world_height);
+			case 3:
+				return isOccupied((this.x_coord - 2) % Params.world_width, (this.y_coord - 2) % Params.world_height);
+			case 4:
+				return isOccupied((this.x_coord - 2) % Params.world_width, this.y_coord);
+			case 5:
+				return isOccupied((this.x_coord - 2) % Params.world_width, (this.y_coord + 2) % Params.world_height);
+			case 6:
+				return isOccupied(this.x_coord, (this.y_coord + 2) % Params.world_height);
+			case 7:
+				return isOccupied((this.x_coord + 2) % Params.world_width, (this.y_coord + 2) % Params.world_height);
+			default:
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks the list of critters to see if any of them occupy the space specified by x and y.
+	 * Another alternative is to keep a grid data structure and iterate through that, instead of iterating through the Critters list.
+	 * @param x The x coordinate to check
+	 * @param y The y coordinate to check
+	 * @return True if 1 or more critters occupies the space, false otherwise.
+	 */
+	private boolean isOccupied(int x, int y) {
+		for(Critter c : population) {
+			if(c.x_coord == x && c.y_coord == y)
+				return true;
+		}
+		return false;
 	}
 }

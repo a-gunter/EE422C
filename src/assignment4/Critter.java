@@ -53,10 +53,73 @@ public abstract class Critter {
 	private int y_coord;
 	
 	protected final void walk(int direction) {
+		move(direction);
+		this.energy -= Params.walk_energy_cost;
 	}
 	
 	protected final void run(int direction) {
-		
+//		move(direction);
+//		move(direction);
+//		this.energy -= Params.run_energy_cost;
+	}
+	
+	private void move(int direction) {
+		switch(direction) {
+			case 0:
+				moveRight();
+				break;
+			case 1:
+				moveRight();
+				moveUp();
+				break;
+			case 2:
+				moveUp();
+				break;
+			case 3:
+				moveUp();
+				moveLeft();
+				break;
+			case 4:
+				moveLeft();
+				break;
+			case 5:
+				moveLeft();
+				moveDown();
+				break;
+			case 6:
+				moveDown();
+				break;
+			case 7:
+				moveDown();
+				moveRight();
+				break;
+			default:
+		}
+	}
+	
+	private void moveRight() {
+		if(this.x_coord == Params.world_width - 1)
+			x_coord = 0;
+		else
+			x_coord++;
+	}
+	private void moveLeft() {
+		if(this.x_coord == 0)
+			x_coord = Params.world_width - 1;
+		else
+			x_coord--;
+	}
+	private void moveUp() {
+		if(this.y_coord == 0)
+			y_coord = Params.world_width - 1;
+		else
+			y_coord--;
+	}
+	private void moveDown() {
+		if(this.y_coord == Params.world_width - 1)
+			y_coord = 0;
+		else
+			y_coord++;
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
@@ -204,15 +267,19 @@ public abstract class Critter {
 	 * Performs timestep, updating world
 	 */
 	public static void worldTimeStep() {
-		// increment timestep
-		
 		// doTimeSteps for each critter
-		
+		for(Critter c: population) {
+			c.doTimeStep();
+		}
 		// do fights ie encounters
 		
 		// generate algae genAlgae()
 		
-		// move babies to general popluation
+		// move babies to general population
+		
+		//rest energy stuff (maybe?)
+		
+		//remove dead critters
 		
 	}
 	

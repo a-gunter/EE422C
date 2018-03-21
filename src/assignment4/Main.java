@@ -69,14 +69,39 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
-        ArrayList<String> input;
-        input = parseInput(kb);
-        while(!input.get(0).equals("quit")) {	
+        mainLoop(parseInput(kb));
+        
+        /* Write your code above */
+        System.out.flush();
+
+    }
+    
+    private static ArrayList<String> parseInput(Scanner kb){
+    	//prompt user
+    	System.out.println("Commands: quit, show, step [count], seed <num>, make <critter> [count], stats <critter>");
+        System.out.print("Input command: ");
+        
+        String in = kb.nextLine();
+        String[] ins = in.split(" ");
+        ArrayList<String> ret = new ArrayList<String>(Arrays.asList(ins));
+        return ret;
+    }
+    
+    private static void mainLoop(ArrayList<String> input) {
+    	//go until quit is typed
+    	while(!input.get(0).equals("quit")) {	
         	switch(input.get(0)) {
         		case "make":
         			if(input.size() == 2) {
         				try {
         					Critter.makeCritter(input.get(1));
+        				} catch (InvalidCritterException e) {
+        					System.out.println(e);
+        				}
+        			} else if(input.size() == 3) {
+        				try {
+        					for(int i = 0;i < Integer.parseInt(input.get(2));i++)
+        						Critter.makeCritter(input.get(1));
         				} catch (InvalidCritterException e) {
         					System.out.println(e);
         				}
@@ -89,7 +114,7 @@ public class Main {
         			if(input.size() == 1) Critter.worldTimeStep();
         			else if(input.size() == 2) {
         				try {
-        					for(int i = 0;i < Integer.parseInt(input.get(1))) {
+        					for(int i = 0;i < Integer.parseInt(input.get(1));i++) {
         						Critter.worldTimeStep();
         					}
         				} catch (Exception e) {
@@ -111,26 +136,9 @@ public class Main {
         			System.out.println("Stats");
         			break;
         	}
-        	
         	//get next input
         	input = parseInput(kb);
         }
-        
-        
-        /* Write your code above */
-        System.out.flush();
-
-    }
-    
-    private static ArrayList<String> parseInput(Scanner kb){
-    	//prompt user
-    	System.out.println("Commands: quit, show, step [count], seed <num>, make <critter>, stats <critter>");
-        System.out.print("Input command: ");
-        
-        String in = kb.nextLine();
-        String[] ins = in.split(" ");
-        ArrayList<String> ret = new ArrayList<String>(Arrays.asList(ins));
-        return ret;
     }
 }
 

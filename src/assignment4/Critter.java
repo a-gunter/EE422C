@@ -98,25 +98,25 @@ public abstract class Critter {
 	}
 	
 	private void moveRight() {
-		if(this.x_coord == Params.world_width - 1)
+		if(this.x_coord >= Params.world_width - 1)
 			x_coord = 0;
 		else
 			x_coord++;
 	}
 	private void moveLeft() {
-		if(this.x_coord == 0)
+		if(this.x_coord <= 0)
 			x_coord = Params.world_width - 1;
 		else
 			x_coord--;
 	}
 	private void moveUp() {
-		if(this.y_coord == 0)
-			y_coord = Params.world_width - 1;
+		if(this.y_coord <= 0)
+			y_coord = Params.world_height - 1;
 		else
 			y_coord--;
 	}
 	private void moveDown() {
-		if(this.y_coord == Params.world_width - 1)
+		if(this.y_coord >= Params.world_height - 1)
 			y_coord = 0;
 		else
 			y_coord++;
@@ -280,7 +280,9 @@ public abstract class Critter {
 		//rest energy stuff (maybe?)
 		
 		//remove dead critters
-		
+		for(Critter c: population) {
+			if(c.energy <= 0) population.remove(c);
+		}
 	}
 	
 	/**
@@ -303,7 +305,12 @@ public abstract class Critter {
 		
 		//put critters in
 		for(Critter c: population) {
-			grid[c.x_coord + 1][c.y_coord + 1] = c.toString(); //compensate for border
+			try {
+				grid[c.x_coord + 1][c.y_coord + 1] = c.toString(); //compensate for border
+			} catch(Exception e) {
+				System.out.println(c.x_coord + " " + c.y_coord);
+				System.out.println(e);
+			}
 		}
 		
 		for(int row = 0;row < Params.world_height + 2;row++) {

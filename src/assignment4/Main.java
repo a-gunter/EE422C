@@ -1,15 +1,13 @@
 package assignment4;
 /* CRITTERS Main.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
- * Slip days used: <0>
- * Fall 2016
+ * <Matthew Davis>
+ * <mqd224>
+ * <15510>
+ * <Austin Gunter>
+ * <Student2 EID> fill this 
+ * <15510>
+ * Spring 2018
  */
 
 import java.util.Scanner;
@@ -73,15 +71,45 @@ public class Main {
         /* Write your code below. */
         ArrayList<String> input;
         input = parseInput(kb);
-        while(!input.get(0).equals("quit")) {
-        	
+        while(!input.get(0).equals("quit")) {	
         	switch(input.get(0)) {
         		case "make":
-        			System.out.println("Make");
+        			if(input.size() == 2) {
+        				try {
+        					Critter.makeCritter(input.get(1));
+        				} catch (InvalidCritterException e) {
+        					System.out.println(e);
+        				}
+        			}
         			break;
         		case "show":
-        			System.out.println("Show");
-        	
+        			Critter.displayWorld();
+        			break;
+        		case "step":
+        			if(input.size() == 1) Critter.worldTimeStep();
+        			else if(input.size() == 2) {
+        				try {
+        					for(int i = 0;i < Integer.parseInt(input.get(1))) {
+        						Critter.worldTimeStep();
+        					}
+        				} catch (Exception e) {
+        					System.out.println(e);
+        				}
+        			}
+        			break;
+        		case "seed":
+        			if(input.size() == 2) {
+        				try {
+        					Critter.setSeed(Integer.parseInt(input.get(1)));
+        				} catch(Exception e) {
+        					System.out.println(e);
+        				}
+        			}
+        			break;
+        		case "stats":
+        			//stage 3
+        			System.out.println("Stats");
+        			break;
         	}
         	
         	//get next input
@@ -100,7 +128,7 @@ public class Main {
         System.out.print("Input command: ");
         
         String in = kb.nextLine();
-        String[] ins = in.split("\\d");
+        String[] ins = in.split(" ");
         ArrayList<String> ret = new ArrayList<String>(Arrays.asList(ins));
         return ret;
     }

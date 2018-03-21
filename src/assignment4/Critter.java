@@ -76,15 +76,19 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
-		switch(critter_class_name) {
-			case "Algae":
-				babies.add(new Algae());
-				break;
-			case "Craig":
-				babies.add(new Craig());
-				break;
-			default:
-				throw new InvalidCritterException(critter_class_name);
+		try {
+			//make critter
+			Class c = Class.forName(myPackage + "." + critter_class_name); //must be assignment4.Class
+			Critter crit = (Critter)c.newInstance();
+			//initialize stats
+			crit.x_coord = getRandomInt(Params.world_width);
+			crit.y_coord = getRandomInt(Params.world_height);
+			crit.energy = Params.start_energy;
+			//add to pop
+			population.add(crit); // I think it should be this not babies from the documentation
+		} catch (Exception e) {
+			System.out.println(e);
+			throw new InvalidCritterException(critter_class_name);
 		}
 	}
 	
@@ -97,7 +101,15 @@ public abstract class Critter {
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
-	
+		for(Critter c: population) {
+			try {
+				if(c.getClass() == Class.forName(critter_class_name)) {
+					result.add(c);
+				}
+			} catch (Exception e){
+				throw new InvalidCritterException(critter_class_name);
+			}
+		}
 		return result;
 	}
 	
@@ -183,7 +195,9 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
-		// Complete this method.
+		//little unclear on what exactly this should do but..
+		population.clear();
+		babies.clear();
 	}
 	
 	/**
@@ -191,16 +205,47 @@ public abstract class Critter {
 	 */
 	public static void worldTimeStep() {
 		// increment timestep
+		
 		// doTimeSteps for each critter
+		
 		// do fights ie encounters
+		
 		// generate algae genAlgae()
+		
 		// move babies to general popluation
+		
 	}
 	
 	/**
 	 * Executed with show command, displays world and all critters
 	 */
 	public static void displayWorld() {
-		// Complete this method.
+		String[][] grid = new String[Params.world_width + 2][Params.world_height + 2];
+		
+		//set corners
+		grid[0][0] = "+";
+		grid[0][Params.world_height + 1] = "+";
+		grid[Params.world_width + 1][0] = "+";
+		grid[Params.world_width + 1][Params.world_height + 1] = "+";
+		
+		//set border
+		for(int col = 1;col < Params.world_width + 1;col++) grid[col][0] = "-";
+		for(int col = 1;col < Params.world_width + 1;col++) grid[col][Params.world_height + 1] = "-";
+		for(int row = 1;row < Params.world_height + 1;row++) grid[0][row] = "|";
+		for(int row = 1;row < Params.world_height + 1;row++) grid[Params.world_width + 1][row] = "|";
+		
+		//put critters in
+		for(Critter c: population) {
+			grid[c.x_coord + 1][c.y_coord + 1] = c.toString(); //compensate for border
+		}
+		
+		for(int row = 0;row < Params.world_height + 2;row++) {
+			for(int col = 0;col < Params.world_width + 2;col++) {
+				if(grid[col][row] == null) System.out.print( " ");
+				else System.out.print(grid[col][row]);
+			}
+			System.out.println();
+		}
+		
 	}
 }

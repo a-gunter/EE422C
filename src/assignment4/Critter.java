@@ -273,11 +273,15 @@ public abstract class Critter {
 		}
 		// do fights ie encounters
 		
+		//rest energy stuff (maybe?)
+		for(Critter c: population) {
+			c.energy -= Params.rest_energy_cost;
+		}
+		
 		// generate algae genAlgae()
 		
 		// move babies to general population
-		
-		//rest energy stuff (maybe?)
+	
 		
 		//remove dead critters
 		for(Critter c: population) {

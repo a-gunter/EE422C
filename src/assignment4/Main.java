@@ -5,7 +5,7 @@ package assignment4;
  * <mqd224>
  * <15510>
  * <Austin Gunter>
- * <Student2 EID> fill this 
+ * <asg2523>
  * <15510>
  * Spring 2018
  */

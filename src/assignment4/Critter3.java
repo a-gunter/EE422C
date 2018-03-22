@@ -10,6 +10,7 @@ package assignment4;
  * Spring 2018
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
 public class Critter3 extends Critter{
 	
 	private int dir;
-	private List<Integer> forbiddenDir;
+	private List<Integer> forbiddenDir = new ArrayList<Integer>();
 	private static int numBabies = 0; // number of Babies that have been created by all Critter3s
 	
 	/**
@@ -53,6 +54,15 @@ public class Critter3 extends Critter{
 					dir = tryDirection;
 					break;
 				}
+//				if(forbiddenDir == null) {
+//					dir = tryDirection;
+//					break;
+//				} else {
+//					if(!forbiddenDir.contains(tryDirection)) {
+//						dir = tryDirection;
+//						break;
+//					}
+//				}
 			}
 			if(!forbiddenDir.isEmpty()) {
 				forbiddenDir.clear();

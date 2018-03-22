@@ -102,65 +102,19 @@ public class Main {
     	while(!input.get(0).equals("quit")) {	
         	switch(input.get(0)) {
         		case "make":
-        			if(input.size() == 2) {
-        				try {
-        					Critter.makeCritter(input.get(1));
-        				} catch (Exception e) {
-        					errorProcessing(input);
-        				}
-        			} else if(input.size() == 3) {
-        				try {
-        					for(int i = 0;i < Integer.parseInt(input.get(2));i++)
-        						Critter.makeCritter(input.get(1));
-        				} catch (Exception e) {
-        					errorProcessing(input);
-        				}
-        			} else {
-        				errorProcessing(input);
-        			}
+        			makeCommand(input);
         			break;
         		case "show":
         			Critter.displayWorld();
         			break;
         		case "step":
-        			if(input.size() == 1) Critter.worldTimeStep();
-        			else if(input.size() == 2) {
-        				int i = 0;
-        				try {
-        					for(i = 0;i < Integer.parseInt(input.get(1));i++) {
-        						Critter.worldTimeStep();
-        					}
-        				} catch (Exception e) {
-        					errorProcessing(input);
-        				}
-        			} else {
-        				errorProcessing(input);
-        			}
+        			stepCommand(input);
         			break;
         		case "seed":
-        			if(input.size() == 2) {
-        				try {
-        					Critter.setSeed(Integer.parseInt(input.get(1)));
-        				} catch(Exception e) {
-        					errorProcessing(input);
-        				}
-        			} else {
-        				errorProcessing(input);
-        			}
+        			seedCommand(input);
         			break;
         		case "stats":
-        			//stage 3
-        			if(input.size() == 2) {
-        				try {
-        					Class<?> c = Class.forName(myPackage + "." + input.get(1)); 
-        					Method method = c.getMethod("runStats", java.util.List.class);
-        					method.invoke(null, Critter.getInstances(input.get(1)));
-        				} catch(Exception e) {
-        					errorProcessing(input);
-        				}
-        			} else {
-        				errorProcessing(input);
-        			}
+        			statsCommand(input);
         			break;
         		default:
         			invalidCommand(input);
@@ -192,6 +146,88 @@ public class Main {
     		System.out.print(input.get(i) + " ");
     	}
     	System.out.println(input.get(input.size() - 1));
+    }
+    
+    /**
+     * Method called when make command is typed, makes 1 Critter if only class specified,
+     *  creates count of Critter if count is specified, otherwise prints error processing
+     * @param input Input from keyboard
+     */
+    private static void makeCommand(ArrayList<String> input) {
+    	if(input.size() == 2) {
+			try {
+				Critter.makeCritter(input.get(1));
+			} catch (Exception e) {
+				errorProcessing(input);
+			}
+		} else if(input.size() == 3) {
+			try {
+				for(int i = 0;i < Integer.parseInt(input.get(2));i++)
+					Critter.makeCritter(input.get(1));
+			} catch (Exception e) {
+				errorProcessing(input);
+			}
+		} else {
+			errorProcessing(input);
+		}
+    }
+    
+    /**
+     * Method called when step command is typed, steps once if only step is typed,
+     *  steps count times if count is specified, otherwise prints error processing
+     * @param input Input from keyboard
+     */
+    private static void stepCommand(ArrayList<String> input) {
+    	if(input.size() == 1) Critter.worldTimeStep();
+		else if(input.size() == 2) {
+			int i = 0;
+			try {
+				for(i = 0;i < Integer.parseInt(input.get(1));i++) {
+					Critter.worldTimeStep();
+				}
+			} catch (Exception e) {
+				errorProcessing(input);
+			}
+		} else {
+			errorProcessing(input);
+		}
+    }
+    
+    /**
+     * Method called when see command is typed, seeds random number generator to
+     *  num specified
+     * @param input Input form keyboard
+     */
+    private static void seedCommand(ArrayList<String> input) {
+    	if(input.size() == 2) {
+			try {
+				Critter.setSeed(Integer.parseInt(input.get(1)));
+			} catch(Exception e) {
+				errorProcessing(input);
+			}
+		} else {
+			errorProcessing(input);
+		}
+    }
+    
+    /**
+     * Method called when stats command is typed, shows stats
+     *  of class specified, prints error processing if undeclared class/command
+     * @param input Input from keyboard
+     */
+    private static void statsCommand(ArrayList<String> input) {
+    	//stage 3
+		if(input.size() == 2) {
+			try {
+				Class<?> c = Class.forName(myPackage + "." + input.get(1)); 
+				Method method = c.getMethod("runStats", java.util.List.class);
+				method.invoke(null, Critter.getInstances(input.get(1)));
+			} catch(Exception e) {
+				errorProcessing(input);
+			}
+		} else {
+			errorProcessing(input);
+		}
     }
     
 }

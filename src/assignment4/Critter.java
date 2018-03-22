@@ -55,6 +55,11 @@ public abstract class Critter {
 	private static final int WALK = 1;
 	private static final int RUN = 2;
 	
+	/**
+	 * Tries to move one space in given direction, if another Critter is in that space or it
+	 *  has already moved it doesn't move but still deducts energy
+	 * @param direction 0-7, with 0 being the right direction, 1 being up and right, etc
+	 */
 	protected final void walk(int direction) {
 		if(canMove(direction, WALK)) {	// check if walking is a valid option for the critter
 			move(direction);
@@ -68,6 +73,11 @@ public abstract class Critter {
 			this.energy = 0;	// change the energy to 0 here, in case of negative energy mid-encounter.
 	}
 	
+	/**
+	 * Tries to move two spaces in given direction, if another Critter is in that space or it
+	 *  has already moved it doesn't move but still deducts energy
+	 * @param direction 0-7, with 0 being the right direction, 1 being up and right, etc
+	 */
 	protected final void run(int direction) {
 		if(canMove(direction, RUN)) {
 			move(direction);
@@ -82,6 +92,10 @@ public abstract class Critter {
 			this.energy = 0;	// change the energy to 0 here, in case of negative energy mid-encounter.
 	}
 	
+	/**
+	 * Helper function for walk and run, moves Critter in given direction
+	 * @param direction 0-7, with 0 being the right direction, 1 being up and right, etc
+	 */
 	private void move(int direction) {
 		switch(direction) {
 			case 0:
@@ -116,24 +130,36 @@ public abstract class Critter {
 		}
 	}
 	
+	/**
+	 * Helper function for move
+	 */
 	private void moveRight() {
 		if(this.x_coord >= Params.world_width - 1)
 			x_coord = 0;
 		else
 			x_coord++;
 	}
+	/**
+	 * Helper function for move
+	 */
 	private void moveLeft() {
 		if(this.x_coord <= 0)
 			x_coord = Params.world_width - 1;
 		else
 			x_coord--;
 	}
+	/**
+	 * Helper function for move
+	 */
 	private void moveUp() {
 		if(this.y_coord <= 0)
 			y_coord = Params.world_height - 1;
 		else
 			y_coord--;
 	}
+	/**
+	 * Helper function for move
+	 */
 	private void moveDown() {
 		if(this.y_coord >= Params.world_height - 1)
 			y_coord = 0;
@@ -141,6 +167,13 @@ public abstract class Critter {
 			y_coord++;
 	}
 	
+	
+	/**
+	 * If Critter has enough energy, gives offspring half energy and moves it one space away,
+	 *  as well as halving its own energy
+	 * @param offspring Hypothetical offspring given enough energy
+	 * @param direction Direction for hypothetical offspring to move when birthed
+	 */
 	protected final void reproduce(Critter offspring, int direction) {
 		if(this.energy < Params.min_reproduce_energy) {
 			return;

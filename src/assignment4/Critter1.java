@@ -12,14 +12,22 @@ package assignment4;
 
 import java.util.List;
 
+/**
+ * Critter that does some random stuff
+ * @author Matt
+ *
+ */
 public class Critter1 extends Critter{
-
+	
 	private int flee;
 	private int dir;
 	private boolean flip;
 	private boolean zealous;
 	private static int fightsPicked = 0;
 	
+	/**
+	 * Constructor, assigns random directions to flee, dir, flip and zealous
+	 */
 	public Critter1() {
 		flee = Critter.getRandomInt(8);
 		dir = Critter.getRandomInt(8);
@@ -32,6 +40,10 @@ public class Critter1 extends Critter{
 		}
 	}
 	
+	/**
+	 * Each time step walks in dir direction, then alternates between dir incremented by 2 and 5 mod 8, 
+	 * and zealous (ie reproduces when fights) being true and false
+	 */
 	@Override
 	public void doTimeStep() {
 		walk(dir);
@@ -49,6 +61,10 @@ public class Critter1 extends Critter{
 		}
 	}
 
+	/**
+	 * If the Critter has more than 25 health, it will try and fight,
+	 *  and if zealous is true it will try and reproduce, else tries to run in *flee* direction
+	 */
 	@Override
 	public boolean fight(String opponent) {
 		if (getEnergy() > 25) {	
@@ -63,11 +79,18 @@ public class Critter1 extends Critter{
 		return false;
 	}
 	
+	/**
+	 * Prints the total number of Critters on the board, and the amount of times a Critter1 has tried to fight
+	 * @param critters List of Critter1's
+	 */
 	public static void runStats(java.util.List<Critter> critters) {
 		System.out.print("" + critters.size() + " total Critter1s, and ");
 		System.out.println("" + fightsPicked + " fights have been picked");
 	}
 	
+	/**
+	 * Returns String "1" as specified in documentation
+	 */
 	public String toString() {
 		return "1";
 	}

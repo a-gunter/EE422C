@@ -8,7 +8,9 @@ Stage 1 - Matt
 Stage 2 - Austin
 Stage 3 - Split
 Critter1 - Matt
-Critter2 - Austin
+Critter2 - Matt
+Critter3 - Austin
+Critter4 - Austin
 
 -----------------------------------------------------
 Classes:
@@ -32,3 +34,26 @@ Critter2:
 		
 	
 	ii. Methods:
+	
+Critter3:
+	i. Fields
+		int dir - direction to move during timestep
+		List<Integer> forbiddenDir - directions that Critter3 CANNOT move in
+		static int numBabies - number of offspring that all Critter3s have produced
+	ii. Methods:
+		Constructor
+		doTimeStep()
+		fight()
+		runStats()
+		toString()
+
+Critter4:
+	i. Fields
+		int dir - direction to move during timestep
+		static int numFights - number of fights that all Critter4s have accepted
+	ii. Methods:
+		Constructor
+		doTimeStep()
+		fight()
+		runStats()
+		toString()

@@ -63,12 +63,23 @@ public abstract class Critter {
 		} else {
 			this.energy -= Params.walk_energy_cost;  // if invalid option, reduce energy anyway.
 		}
+		
+		if(this.energy < 0)
+			this.energy = 0;	// change the energy to 0 here, in case of negative energy mid-encounter.
 	}
 	
 	protected final void run(int direction) {
-//		move(direction);
-//		move(direction);
-//		this.energy -= Params.run_energy_cost;
+		if(canMove(direction, RUN)) {
+			move(direction);
+			move(direction);
+			this.energy -= Params.run_energy_cost;
+			this.hasMoved = true;
+		} else {
+			this.energy -= Params.run_energy_cost;
+		}
+		
+		if(this.energy < 0)
+			this.energy = 0;	// change the energy to 0 here, in case of negative energy mid-encounter.
 	}
 	
 	private void move(int direction) {
@@ -131,10 +142,24 @@ public abstract class Critter {
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
+		if(this.energy < Params.min_reproduce_energy) {
+			return;
+		} else {
+			offspring.energy = this.energy / 2;
+			offspring.x_coord = this.x_coord;
+			offspring.y_coord = this.y_coord;
+			offspring.move(direction);
+			if(this.energy % 2 == 1)
+				this.energy = (this.energy / 2) + 1;
+			else
+				this.energy = this.energy / 2;
+			
+			babies.add(offspring);
+		}
 	}
 
 	public abstract void doTimeStep();
-	public abstract boolean fight(String oponent);
+	public abstract boolean fight(String opponent);
 	
 	/**
 	 * create and initialize a Critter subclass.
@@ -280,9 +305,6 @@ public abstract class Critter {
 			c.doTimeStep();
 		}
 		
-/////////////////// Should we remove dead critters here as well? Just in case a critter dies from their initial timestep.
-////////////////// That way, we won't have to deal with encounters with already-dead critters.
-		
 		// do fights ie encounters
 		doEncounters();
 
@@ -292,16 +314,29 @@ public abstract class Critter {
 		}
 		
 		// generate algae genAlgae()
+		for(int i = 0; i < Params.refresh_algae_count; i++) {
+			Algae a = new Algae();
+			a.setEnergy(Params.start_energy);
+			a.setX_coord(Critter.getRandomInt(Params.world_width));
+			a.setY_coord(Critter.getRandomInt(Params.world_height));
+			population.add(a);
+		}
 		
 		// move babies to general population
-	
+		for(Critter baby: babies) {
+			population.add(baby);
+			babies.remove(baby);
+		}
 		
 		//remove dead critters
 		for(Critter c: population) {
-			if(c.energy <= 0) population.remove(c);
+			if(c.energy <= 0)
+				population.remove(c);
+			else {
+				c.hasMoved = false; // at the end of timestep, revert all critters' hasMoved/isFighting to false
+				c.isFighting = false;
+			}
 		}
-		
-		// at the end of timestep, revert all critters' hasMoved/isFighting to false
 	}
 	
 	/**
@@ -374,13 +409,36 @@ public abstract class Critter {
 	private static void doEncounters() {
 		for(int i = 0; i < population.size(); i++) {	// compare critters with every other critter to see if there are overlaps
 			Critter A = population.get(i);
-			for(int j = i + 1; j < population.size(); j++) {
-				Critter B = population.get(j);
-				if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
-					A.isFighting = true;
-					B.isFighting = true;
-					// todo: finish doEncounters
-				}
+			if(A.energy > 0) {  // don't want encounters with already-dead critters
+				for(int j = i + 1; j < population.size(); j++) { 
+					Critter B = population.get(j);
+					if(B.energy > 0) { // no dead critters
+						if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
+							A.isFighting = true;
+							B.isFighting = true;
+							boolean probablyUnnecessary = A.fight(B.toString()); // fight will call walk/run depending on the critter
+							boolean alsoUnnecessary = B.fight(A.toString());
+							if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
+								int fightA, fightB;
+								if(A.energy > 0)
+									fightA = Critter.getRandomInt(A.energy);  // getRandomInt(0) will throw an exception, so check for 0.
+								else
+									fightA = 0;
+								if(B.energy > 0)
+									fightB = Critter.getRandomInt(B.energy);
+								else
+									fightB = 0;
+								if(fightB > fightA) {
+									B.energy += (A.energy / 2);
+									A.energy = 0;
+								} else {
+									A.energy += (B.energy / 2);
+									B.energy = 0;
+								}
+							}
+						}	
+					}
+				}				
 			}
 		}
 	}

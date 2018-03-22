@@ -34,7 +34,9 @@ public class Critter3 extends Critter{
 	}
 	
 	/**
-	 * 
+	 * Does time step for Critter3.
+	 * Reproduces if possible, and won't move if he reproduced during the timestep.
+	 * If moving, choose a direction that is not forbidden, and update direction/forbiddenDir
 	 */
 	@Override
 	public void doTimeStep() {
@@ -62,7 +64,7 @@ public class Critter3 extends Critter{
 	}
 
 	/**
-	 * 
+	 * Only accepts fights if his energy is >= start_energy / 4.
 	 */
 	@Override
 	public boolean fight(String opponent) {
@@ -75,8 +77,8 @@ public class Critter3 extends Critter{
 	}
 	
 	/**
-	 * 
-	 * @param critters List of Critter1's
+	 * Prints out the total number of Critter3s, and gives a stat on how many times Critter3 has reproduced.
+	 * @param critters List of Critter3's
 	 */
 	public static void runStats(java.util.List<Critter> critter3s) {
 		System.out.print("" + critter3s.size() + " total Critter3s, and ");

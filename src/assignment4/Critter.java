@@ -535,7 +535,7 @@ public abstract class Critter {
 	 */
 	private boolean isOccupied(int x, int y) {
 		for(Critter c : population) {
-			if(c.x_coord == x && c.y_coord == y)
+			if(c.x_coord == x && c.y_coord == y && c.energy > 0)
 				return true;
 		}
 		return false;

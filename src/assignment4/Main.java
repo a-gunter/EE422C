@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.*;
+import java.lang.reflect.*;
 
 
 /*
@@ -76,6 +77,11 @@ public class Main {
 
     }
     
+    /**
+     * Parses command line entry
+     * @param kb Keyboard Scanner
+     * @return ArrayList of each word/entry
+     */
     private static ArrayList<String> parseInput(Scanner kb){
     	//prompt user
     	System.out.println("Commands: quit, show, step [count], seed <num>, make <critter> [count], stats <critter>");
@@ -87,6 +93,10 @@ public class Main {
         return ret;
     }
     
+    /**
+     * Main loop of program, takes commands and does appropriate actions including error handling
+     * @param input ArrayList of Strings, each word from command prompt
+     */
     private static void mainLoop(ArrayList<String> input) {
     	//go until quit is typed
     	while(!input.get(0).equals("quit")) {	
@@ -95,16 +105,18 @@ public class Main {
         			if(input.size() == 2) {
         				try {
         					Critter.makeCritter(input.get(1));
-        				} catch (InvalidCritterException e) {
-        					System.out.println(e);
+        				} catch (Exception e) {
+        					errorProcessing(input);
         				}
         			} else if(input.size() == 3) {
         				try {
         					for(int i = 0;i < Integer.parseInt(input.get(2));i++)
         						Critter.makeCritter(input.get(1));
-        				} catch (InvalidCritterException e) {
-        					System.out.println(e);
+        				} catch (Exception e) {
+        					errorProcessing(input);
         				}
+        			} else {
+        				errorProcessing(input);
         			}
         			break;
         		case "show":
@@ -113,13 +125,16 @@ public class Main {
         		case "step":
         			if(input.size() == 1) Critter.worldTimeStep();
         			else if(input.size() == 2) {
+        				int i = 0;
         				try {
-        					for(int i = 0;i < Integer.parseInt(input.get(1));i++) {
+        					for(i = 0;i < Integer.parseInt(input.get(1));i++) {
         						Critter.worldTimeStep();
         					}
         				} catch (Exception e) {
-        					System.out.println(e);
+        					errorProcessing(input);
         				}
+        			} else {
+        				errorProcessing(input);
         			}
         			break;
         		case "seed":
@@ -127,19 +142,60 @@ public class Main {
         				try {
         					Critter.setSeed(Integer.parseInt(input.get(1)));
         				} catch(Exception e) {
-        					System.out.println(e);
+        					errorProcessing(input);
         				}
+        			} else {
+        				errorProcessing(input);
         			}
         			break;
         		case "stats":
         			//stage 3
-        			System.out.println("Stats");
+        			if(input.size() == 2) {
+        				try {
+        					Class<?> c = Class.forName(myPackage + "." + input.get(1)); 
+        					Method method = c.getMethod("runStats", java.util.List.class);
+        					method.invoke(null, Critter.getInstances(input.get(1)));
+        				} catch(Exception e) {
+        					errorProcessing(input);
+        				}
+        			} else {
+        				errorProcessing(input);
+        			}
         			break;
+        		default:
+        			invalidCommand(input);
         	}
         	//get next input
         	input = parseInput(kb);
         }
     }
+    
+    /**
+     * Prints error message for invalid command
+     * @param input Input from keyboard
+     */
+    private static void invalidCommand(ArrayList<String> input) {
+    	System.out.print("invalid command: ");
+    	for(int i = 0;i < input.size()-1;i++) {
+    		System.out.print(input.get(i) + " ");
+    	}
+    	System.out.println(input.get(input.size() - 1));
+    }
+    
+    /**
+     * Prints error message for parsing error
+     * @param input Input from keyboard
+     */
+    private static void errorProcessing(ArrayList<String> input) {
+    	System.out.print("error processing: ");
+    	for(int i = 0;i < input.size()-1;i++) {
+    		System.out.print(input.get(i) + " ");
+    	}
+    	System.out.println(input.get(input.size() - 1));
+    }
+    
 }
+
+
 
 

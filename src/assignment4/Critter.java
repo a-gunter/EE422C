@@ -155,6 +155,7 @@ public abstract class Critter {
 				this.energy = this.energy / 2;
 			
 			babies.add(offspring);
+			System.out.println(this);
 		}
 	}
 
@@ -174,7 +175,7 @@ public abstract class Critter {
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
 		try {
 			//make critter
-			Class c = Class.forName(myPackage + "." + critter_class_name); //must be assignment4.Class
+			Class<?> c = Class.forName(myPackage + "." + critter_class_name); //must be assignment4.Class
 			Critter crit = (Critter)c.newInstance();
 			//initialize stats
 			crit.x_coord = getRandomInt(Params.world_width);
@@ -183,7 +184,6 @@ public abstract class Critter {
 			//add to pop
 			population.add(crit); // I think it should be this not babies from the documentation
 		} catch (Exception e) {
-			System.out.println(e);
 			throw new InvalidCritterException(critter_class_name);
 		}
 	}
@@ -199,7 +199,7 @@ public abstract class Critter {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		for(Critter c: population) {
 			try {
-				if(c.getClass() == Class.forName(critter_class_name)) {
+				if(c.getClass() == Class.forName(myPackage + "." + critter_class_name)) {
 					result.add(c);
 				}
 			} catch (Exception e){
@@ -327,14 +327,16 @@ public abstract class Critter {
 		babies.clear();
 		
 		//remove dead critters
+		List<Critter> dead = new java.util.ArrayList<Critter>();
 		for(Critter c: population) {
 			if(c.energy <= 0) {
-				population.remove(c);
+				dead.add(c);
 			} else {
 				c.hasMoved = false; // at the end of timestep, revert all critters' hasMoved/isFighting to false
 				c.isFighting = false;
 			}
 		}
+		population.removeAll(dead); //other implementation was throwing an exception
 	}
 	
 	/**
@@ -414,19 +416,19 @@ public abstract class Critter {
 						if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
 							A.isFighting = true;
 							B.isFighting = true;
-							boolean probablyUnnecessary = A.fight(B.toString()); // fight will call walk/run depending on the critter
-							boolean alsoUnnecessary = B.fight(A.toString());
+							boolean aWantsToFight = A.fight(B.toString()); // fight will call walk/run depending on the critter
+							boolean bWantsToFight = B.fight(A.toString());
 							if((A.x_coord == B.x_coord) && (A.y_coord == B.y_coord)) {
 								int fightA, fightB;
-								if(A.energy > 0)
+								if(A.energy > 0 && aWantsToFight)
 									fightA = Critter.getRandomInt(A.energy);  // getRandomInt(0) will throw an exception, so check for 0.
 								else
 									fightA = 0;
-								if(B.energy > 0)
+								if(B.energy > 0 && bWantsToFight)
 									fightB = Critter.getRandomInt(B.energy);
 								else
 									fightB = 0;
-								if(fightB > fightA) {
+								if(fightB > fightA || A.getClass().equals(Algae.class)) {
 									B.energy += (A.energy / 2);
 									A.energy = 0;
 								} else {

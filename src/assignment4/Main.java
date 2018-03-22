@@ -109,7 +109,11 @@ public class Main {
         			makeCommand(input);
         			break;
         		case "show":
-        			Critter.displayWorld();
+        			if(input.size() > 1) {
+        				errorProcessing(input);
+        			} else {
+            			Critter.displayWorld();
+        			}
         			break;
         		case "step":
         			stepCommand(input);

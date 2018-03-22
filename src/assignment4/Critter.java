@@ -155,7 +155,6 @@ public abstract class Critter {
 				this.energy = this.energy / 2;
 			
 			babies.add(offspring);
-			System.out.println(this);
 		}
 	}
 
@@ -428,7 +427,7 @@ public abstract class Critter {
 									fightB = Critter.getRandomInt(B.energy);
 								else
 									fightB = 0;
-								if(fightB > fightA || A.getClass().equals(Algae.class)) {
+								if(fightB > fightA || A instanceof Algae) {
 									B.energy += (A.energy / 2);
 									A.energy = 0;
 								} else {

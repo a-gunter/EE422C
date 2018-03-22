@@ -323,16 +323,14 @@ public abstract class Critter {
 		}
 		
 		// move babies to general population
-		for(Critter baby: babies) {
-			population.add(baby);
-			babies.remove(baby);
-		}
+		population.addAll(babies);
+		babies.clear();
 		
 		//remove dead critters
 		for(Critter c: population) {
-			if(c.energy <= 0)
+			if(c.energy <= 0) {
 				population.remove(c);
-			else {
+			} else {
 				c.hasMoved = false; // at the end of timestep, revert all critters' hasMoved/isFighting to false
 				c.isFighting = false;
 			}

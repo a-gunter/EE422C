@@ -60,7 +60,7 @@ public class Critter4 extends Critter{
 	 */
 	public static void runStats(java.util.List<Critter> critter4s) {
 		System.out.print("" + critter4s.size() + " total Critter4s, and ");
-		System.out.print(numFights + "fights have been picked");
+		System.out.print(numFights + " fights have been picked");
 	}
 	
 	/**

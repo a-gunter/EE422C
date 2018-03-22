@@ -1,4 +1,14 @@
 package assignment4;
+/* CRITTERS Main.java
+ * EE422C Project 4 submission by
+ * <Matthew Davis>
+ * <mqd224>
+ * <15510>
+ * <Austin Gunter>
+ * <asg2523>
+ * <15510>
+ * Spring 2018
+ */
 
 import java.util.List;
 
@@ -59,7 +69,7 @@ public class Critter1 extends Critter{
 	}
 	
 	public String toString() {
-		return "I";
+		return "1";
 	}
 	
 }

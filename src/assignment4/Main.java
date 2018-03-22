@@ -233,6 +233,10 @@ public class Main {
     private static void statsCommand(ArrayList<String> input) {
     	//stage 3
 		if(input.size() == 2) {
+			if(input.get(1).equals("Critter")) {
+				errorProcessing(input);
+				return;
+			}
 			try {
 				Class<?> c = Class.forName(myPackage + "." + input.get(1)); 
 				Method method = c.getMethod("runStats", java.util.List.class);

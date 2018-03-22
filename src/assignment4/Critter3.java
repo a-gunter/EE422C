@@ -92,7 +92,7 @@ public class Critter3 extends Critter{
 	 */
 	public static void runStats(java.util.List<Critter> critter3s) {
 		System.out.print("" + critter3s.size() + " total Critter3s, and ");
-		System.out.print(numBabies + " babies have been made");
+		System.out.println(numBabies + " babies have been made");
 	}
 	
 	/**

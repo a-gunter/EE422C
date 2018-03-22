@@ -56,7 +56,7 @@ public abstract class Critter {
 	private static final int RUN = 2;
 	
 	/**
-	 * Tries to move one space in given direction, if another Critter is in that space or it
+	 * Tries to move one space in given direction, if another Critter is in that space (while fighting) or it
 	 *  has already moved it doesn't move but still deducts energy
 	 * @param direction 0-7, with 0 being the right direction, 1 being up and right, etc
 	 */
@@ -74,7 +74,7 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * Tries to move two spaces in given direction, if another Critter is in that space or it
+	 * Tries to move two spaces in given direction, if another Critter is in that space (while fighting) or it
 	 *  has already moved it doesn't move but still deducts energy
 	 * @param direction 0-7, with 0 being the right direction, 1 being up and right, etc
 	 */
@@ -460,7 +460,7 @@ public abstract class Critter {
 									fightB = Critter.getRandomInt(B.energy);
 								else
 									fightB = 0;
-								if(fightB > fightA || A instanceof Algae) {
+								if((fightB > fightA) || (A instanceof Algae && !(B instanceof Algae))) {
 									B.energy += (A.energy / 2);
 									A.energy = 0;
 								} else {

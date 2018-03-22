@@ -1,5 +1,5 @@
 package assignment4;
-/* CRITTERS Critter1.java
+/* CRITTERS Critter3.java
  * EE422C Project 4 submission by
  * <Matthew Davis>
  * <mqd224>
@@ -42,6 +42,7 @@ public class Critter3 extends Critter{
 		if(getEnergy() >= Params.min_reproduce_energy) {
 			Critter3 child = new Critter3();
 			reproduce(child, Critter.getRandomInt(8));
+			numBabies++;
 		} else {
 			walk(dir);
 			while(true) {

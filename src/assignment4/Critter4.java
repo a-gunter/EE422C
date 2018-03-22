@@ -1,5 +1,5 @@
 package assignment4;
-/* CRITTERS Critter1.java
+/* CRITTERS Critter4.java
  * EE422C Project 4 submission by
  * <Matthew Davis>
  * <mqd224>
@@ -10,7 +10,6 @@ package assignment4;
  * Spring 2018
  */
 
-import java.util.List;
 
 /**
  * Unique Critter 4

@@ -84,8 +84,9 @@ public class Main {
      */
     private static ArrayList<String> parseInput(Scanner kb){
     	//prompt user
-    	System.out.println("Commands: quit, show, step [count], seed <num>, make <critter> [count], stats <critter>");
-        System.out.print("Input command: ");
+    	//System.out.println("Commands: quit, show, step [count], seed <num>, make <critter> [count], stats <critter>");
+        //System.out.print("Input command: ");
+    	System.out.print("critters>");
         
         String in = kb.nextLine();
         String[] ins = in.split(" ");
@@ -99,7 +100,10 @@ public class Main {
      */
     private static void mainLoop(ArrayList<String> input) {
     	//go until quit is typed
-    	while(!input.get(0).equals("quit")) {	
+    	while(!input.get(0).equals("quit") || (input.get(0).equals("quit") && input.size() > 1)) {
+        	if(input.get(0).equals("quit") && input.size() > 1) {
+        		errorProcessing(input);
+        	}
         	switch(input.get(0)) {
         		case "make":
         			makeCommand(input);
@@ -117,6 +121,7 @@ public class Main {
         			statsCommand(input);
         			break;
         		default:
+        			if(!input.get(0).equals("quit"))
         			invalidCommand(input);
         	}
         	//get next input
@@ -181,8 +186,14 @@ public class Main {
     	if(input.size() == 1) Critter.worldTimeStep();
 		else if(input.size() == 2) {
 			int i = 0;
+			int numSteps = 0;
 			try {
-				for(i = 0;i < Integer.parseInt(input.get(1));i++) {
+				numSteps = Integer.parseInt(input.get(1));
+			} catch(NumberFormatException e) {
+				errorProcessing(input);
+			}
+			try {
+				for(i = 0;i < numSteps;i++) {
 					Critter.worldTimeStep();
 				}
 			} catch (Exception e) {
@@ -231,7 +242,3 @@ public class Main {
     }
     
 }
-
-
-
-

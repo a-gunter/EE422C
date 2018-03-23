@@ -31,10 +31,17 @@ Critter1:
 
 Critter2:
 	i. Fields
-		
+		int dir - direction to move during timestep
+		int iteration - keeps track of current generation
+		static int total2 - keeps track of total Critter2's born
 	
 	ii. Methods:
-	
+		Constructor
+		doTimeStep()
+		fight()
+		runStats()
+		toString()
+
 Critter3:
 	i. Fields
 		int dir - direction to move during timestep
